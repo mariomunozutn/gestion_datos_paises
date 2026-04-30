@@ -1,3 +1,5 @@
+from src.menu_actions.new_country import create_new_country
+
 MENU = """
 | 1: Agregar país   | 2: Actualizar población | 3: Actualizar superficie | 4: Buscar país por nombre |
 | 5: Filtrar países | 6: Ordenar países       | 7: Mostrar estadísticas  | 8: Salir                  |"""
@@ -16,9 +18,8 @@ def show_main_menu() -> None:
             continue
         
         # Cada opción del menú se implementa en su propio módulo dentro de menu_actions/
-        # Convención: un archivo por opción, nombrado según la accion, ej: add_country.py
         if int(menu_option) == 1:
-            None
+            create_new_country()
         elif int(menu_option) == 2:
             None
         elif int(menu_option) == 3:
