@@ -25,7 +25,7 @@ def show_main_menu() -> None:
         elif int(menu_option) == 3:
             None
         elif int(menu_option) == 4:
-            None
+            print("hola mundo")
         elif int(menu_option) == 5:
             None
         elif int(menu_option) == 6:
