@@ -26,74 +26,71 @@ def show_main_menu() -> None:
             None
         elif int(menu_option) == 4:
             import csv
-            FILE_LOCATION = "data/paises.csv"
-    
+
             paises = []
             try:
-                with open(FILE_LOCATION, "r", encoding="utf-8") as file:
-                   reader = csv.DictReader(file)
-                   for row in reader:
-                       row["poblacion"] = int(row["poblacion"])
-                       row["superficie"] = int(row["superficie"])
-                       paises.append(row)
-            except FileNotFoundError:
-                print(f"\n❌ Error: No se encontró el archivo {FILE_LOCATION}")
-                continue  # este continue sí es válido porque está dentro del while True del menú
-    
-            if not paises:
-                print("\n📭 No hay países cargados en el sistema.")
+                with open("data/paises.csv", "r", encoding="utf-8") as archivo:
+                    lector = csv.DictReader(archivo)
+                    for fila in lector:
+                        fila["poblacion"] = int(fila["poblacion"])
+                        fila["superficie"] = int(fila["superficie"])
+                        paises.append(fila)
+            except:
+                print("\nError al abrir el archivo")
                 continue
-    
-            nombre_buscar = input("\nIngrese el nombre del país a buscar (puede ser parcial): ").strip()
-            if not nombre_buscar:
-                print("\n❌ Nombre no válido.")
+
+            if len(paises) == 0:
+                print("\nNo hay países cargados")
                 continue
-    
-            texto = nombre_buscar.lower()
-            coincidencias = [p for p in paises if texto in p["nombre"].lower()]
-    
-            if not coincidencias:
-               print(f"\n❌ No se encontró ningún país que contenga '{nombre_buscar}'.")
-               continue
-    
-            print(f"\n🔍 Se encontraron {len(coincidencias)} país(es):")
-            for i, p in enumerate(coincidencias, start=1):
-                print(f"   {i}. {p['nombre']} - {p['continente']} (población: {p['poblacion']:,})")
-    
-            if len(coincidencias) == 1:
-                elegido = coincidencias[0]
-                print("\n→ Único resultado, se seleccionará automáticamente.")
+
+            nombre = input("\nIngrese el nombre del país: ").strip()
+
+            if nombre == "":
+                print("\nDebe ingresar un nombre")
+                continue
+
+            encontrados = []
+
+            for pais in paises:
+                if nombre.lower() in pais["nombre"].lower():
+                    encontrados.append(pais)
+
+            if len(encontrados) == 0:
+                print("\nNo se encontraron coincidencias")
+                continue
+
+            print("\nResultados encontrados:\n")
+
+            for i in range(len(encontrados)):
+                print(
+                 str(i + 1) + ".",
+                 encontrados[i]["nombre"],
+                 "-",
+                    
+                 encontrados[i]["continente"]
+                )
+
+            if len(encontrados) == 1:
+                elegido = encontrados[0]
             else:
                 elegido = None
-                while True:
-                    try:
-                        opcion = input(f"\nElija el número (1-{len(coincidencias)}) o 0 para cancelar: ").strip()
-                        if opcion == "0":
-                            break
-                        opcion = int(opcion)
-                        if 1 <= opcion <= len(coincidencias):
-                            elegido = coincidencias[opcion - 1]
-                            break
-                        print(f"Opción inválida. Debe ser 1-{len(coincidencias)}.")
-                    except ValueError:
-                        print("Ingrese un número válido.")
-    
-            if elegido:
-                print("\n" + "="*50)
-                print("✅ PAÍS SELECCIONADO:")
-                print("="*50)
-                print(f"   Nombre     : {elegido['nombre']}")
-                print(f"   Población  : {elegido['poblacion']:,} hab.")
-                print(f"   Superficie : {elegido['superficie']:,} km²")
-                print(f"   Continente : {elegido['continente']}")
-                print("="*50)
-            elif coincidencias:
-                print("\n🔁 Búsqueda cancelada.")
-        elif int(menu_option) == 5:
-            None
-        elif int(menu_option) == 6:
-            None
-        elif int(menu_option) == 7:
-            None
-        elif int(menu_option) == 8:
-            None
+                while elegido == None:
+                    opcion = input("\nSeleccione un número o 0 para cancelar: ")
+                    if opcion == "0":
+                        break
+                    if opcion.isdigit():
+                        num = int(opcion)
+                        if num >= 1 and num <= len(encontrados):
+                            elegido = encontrados[num - 1]
+                        else:
+                            print("Número inválido")
+                    else:
+                        print("Ingrese solo números")
+
+            if elegido != None:
+                print("\n========== DATOS DEL PAÍS ==========")
+                print("Nombre:", elegido["nombre"])
+                print("Población:", elegido["poblacion"])
+                print("Superficie:", elegido["superficie"], "km²")
+                print("Continente:", elegido["continente"])
+                print("====================================")
