@@ -1,5 +1,6 @@
 from src.menu_actions.new_country import create_new_country
 from src.menu_actions.update_country_data import update_country_data
+from src.menu_actions.filter_countries import filter_countries
 
 MENU = """
 | 1: Agregar país   | 2: Actualizar Datos del País | 4: Buscar país por nombre |            |
@@ -28,7 +29,7 @@ def show_main_menu() -> None:
         elif int(menu_option) == 4:
             None
         elif int(menu_option) == 5:
-            None
+            filter_countries()
         elif int(menu_option) == 6:
             None
         elif int(menu_option) == 7:
