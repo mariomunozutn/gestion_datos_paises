@@ -3,9 +3,9 @@ from src.menu_actions.update_country_data import update_country_data
 from src.menu_actions.filter_countries import filter_countries
 
 MENU = """
-| 1: Agregar país   | 2: Actualizar Datos del País | 4: Buscar país por nombre |            |
-| 5: Filtrar países | 6: Ordenar países            | 7: Mostrar estadísticas   | 8: Salir   |"""
-MENU_ALLOW_OPTIONS = [1,2,3,4,5, 6,7,8]
+| 1: Agregar país   | 2: Actualizar Datos del País | 3: Buscar país por nombre | ---------- |
+| 4: Filtrar países | 5: Ordenar países            | 6: Mostrar estadísticas   | 7: Salir   |"""
+MENU_ALLOW_OPTIONS = [1,2,3,4,5, 6,7]
 
 def show_main_menu() -> None:
     # todas las opciones de menú estrán aqui dentro. Será la forma de volver al menú automaticamente luego de 
@@ -25,8 +25,6 @@ def show_main_menu() -> None:
         elif int(menu_option) == 2:
             update_country_data()
         elif int(menu_option) == 3:
-            None
-        elif int(menu_option) == 4:
             import csv
 
             paises = []
@@ -96,9 +94,9 @@ def show_main_menu() -> None:
                 print("Superficie:", elegido["superficie"], "km²")
                 print("Continente:", elegido["continente"])
                 print("====================================")
-        elif int(menu_option) == 5:
+        elif int(menu_option) == 4:
             filter_countries()
-        elif int(menu_option) == 6:
+        elif int(menu_option) == 5:
             paises = []
             try:
                 with open("data/paises.csv", "r", encoding="utf-8") as archivo:
@@ -189,7 +187,7 @@ def show_main_menu() -> None:
                  pais["continente"]
                 )
             print("-" * 60)
-        elif int(menu_option) == 7:
+        elif int(menu_option) == 6:
             paises = []
 
             try:
@@ -269,5 +267,5 @@ def show_main_menu() -> None:
                 print(cont, ":", continentes[cont], "país(es)")
 
             print("\n" + "=" * 50)
-        elif int(menu_option) == 8:
+        elif int(menu_option) == 7:
             None
