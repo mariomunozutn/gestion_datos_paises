@@ -268,4 +268,5 @@ def show_main_menu() -> None:
 
             print("\n" + "=" * 50)
         elif int(menu_option) == 7:
-            None
+            print("[ CERRANDO PROGRAMA ...]")
+            break
