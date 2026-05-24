@@ -46,3 +46,40 @@ def update_country(country_name: str, new_data: dict) -> None:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+        
+        
+def find_countries_by_filters(filters: dict) -> list:
+    filtered_contries = []
+    
+    with open(FILE_LOCATION, "r", encoding="utf-8", newline="") as file:
+        reader = csv.DictReader(file);
+        
+        for log in reader:
+            continent = filters.get("continente")
+            population_min = filters.get("poblacion_min")
+            population_max = filters.get("poblacion_max")
+            area_min = filters.get("superficie_min")
+            area_max = filters.get("superficie_max")
+            
+            if continent != None and log.get("continente", "").strip().lower() != continent.lower():
+                # si no coincide salta la iteracion
+                continue
+
+            if population_min != None and int(log.get("poblacion", 0)) < int(population_min):
+                # si no coincide salta la iteracion
+                continue
+
+            if population_max != None and int(log.get("poblacion", 0)) > int(population_max):
+                # si no coincide salta la iteracion
+                continue
+
+            if area_min != None and int(log.get("superficie", 0)) < int(area_min):
+                # si no coincide salta la iteracion
+                continue
+
+            if area_max != None and int(log.get("superficie", 0)) > int(area_max):
+                # si no coincide salta la iteracion
+                continue
+
+            filtered_contries.append(dict(log))
+    return filtered_contries
