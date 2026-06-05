@@ -1,37 +1,139 @@
 from src.repositories.country_repository import find_countries_by_filters
 from src.utils.field_input import request_numeric_field, request_text_field
-from src.utils.constants import FILTERS, FILTER_LABELS, CSV_HEADERS
+from src.utils.constants import FILTERS, FILTER_LABELS
 
-def filter_countries() -> None: 
-    filters = dict(FILTERS)
-
-    print(f"\n[ FILTRAR PAÍSES ]")
-
-    # desempaquetar los valores de la tupla "continente": ("continente", "texto"),
-    for key, (label, type) in FILTER_LABELS.items():
-        
+import csv
+def filter_countries() -> None:
+    
+    paises = []
+    try:
+        with open("data/paises.csv", "r", encoding="utf-8") as archivo:
+            lector = csv.DictReader(archivo)
+            for fila in lector:
+                fila["poblacion"] = int(fila["poblacion"])
+                fila["superficie"] = int(fila["superficie"])
+                paises.append(fila)
+    except:
+        print("\nError al abrir el archivo")
+        return
+    
+    if len(paises) == 0:
+        print("\nNo hay países cargados")
+        return
+    
+    continente = None
+    pob_min = None
+    pob_max = None
+    sup_min = None
+    sup_max = None
+    
+    print("\n[ FILTRAR PAÍSES ]")
+    
+    while True:
+        opcion = input("\n¿Filtrar por continente? [Y/N]: ").strip().upper()
+        if opcion == "Y" or opcion == "N":
+            break
+        print("Solo Y o N")
+    if opcion == "Y":
+        continente = input("Continente: ").strip().lower()
+    
+    while True:
+        opcion = input("\n¿Filtrar por población mínima? [Y/N]: ").strip().upper()
+        if opcion == "Y" or opcion == "N":
+            break
+        print("Solo Y o N")
+    if opcion == "Y":
         while True:
-            answer = input(f"\n¿Desea filtrar por '{label}'? [Y/N]: ")
-            if answer.upper() in ["Y", "N"]:
+            try:
+                pob_min = int(input("Población mínima: "))
                 break
-            print(f"\n[ ERROR ] - Opción inválida. Ingrese Y o N")
-
-        if answer.upper() != "Y":
-            continue
-
-        if type == "texto":
-            filters[key] = request_text_field("continente")
-        else:
-            filters[key] = request_numeric_field(label)
-
-    results = find_countries_by_filters(filters)
-
-    print(f"\n[ RESULTADOS DE LA BUSQUEDA - {len(results)} ]")
-    print(f"| {'Nombre'}{' ' * (16 - len('Nombre'))}| {'Poblacion'}{' ' * (16 - len('Poblacion'))}| {'Superficie'}{' ' * (16 - len('Superficie'))}| {'Continente'}{' ' * (16 - len('Continente'))}|")
-    print(f"{'-' * 75}")
-    for country in results:
-        nombre     = country.get('nombre', '').strip()
-        poblacion  = country.get('poblacion', '').strip()
-        superficie = country.get('superficie', '').strip()
-        continente = country.get('continente', '').strip()
-        print(f"| {nombre}{' ' * (16 - len(nombre))}| {poblacion}{' ' * (16 - len(poblacion))}| {superficie}{' ' * (16 - len(superficie))}| {continente}{' ' * (15 - len(continente))} |")
+            except:
+                print("Número válido")
+    
+    while True:
+        opcion = input("\n¿Filtrar por población máxima? [Y/N]: ").strip().upper()
+        if opcion == "Y" or opcion == "N":
+            break
+        print("Solo Y o N")
+    if opcion == "Y":
+        while True:
+            try:
+                pob_max = int(input("Población máxima: "))
+                break
+            except:
+                print("Número válido")
+    
+    while True:
+        opcion = input("\n¿Filtrar por superficie mínima? [Y/N]: ").strip().upper()
+        if opcion == "Y" or opcion == "N":
+            break
+        print("Solo Y o N")
+    if opcion == "Y":
+        while True:
+            try:
+                sup_min = int(input("Superficie mínima (km cuadrados): "))
+                break
+            except:
+                print("Número válido")
+    
+    while True:
+        opcion = input("\n¿Filtrar por superficie máxima? [Y/N]: ").strip().upper()
+        if opcion == "Y" or opcion == "N":
+            break
+        print("Solo Y o N")
+    if opcion == "Y":
+        while True:
+            try:
+                sup_max = int(input("Superficie máxima (km²): "))
+                break
+            except:
+                print("Número válido")
+    
+    resultados = paises.copy()
+    
+    if continente:
+        nuevos = []
+        for p in resultados:
+            if p["continente"].lower() == continente:
+                nuevos.append(p)
+        resultados = nuevos
+    
+    if pob_min is not None:
+        nuevos = []
+        for p in resultados:
+            if p["poblacion"] >= pob_min:
+                nuevos.append(p)
+        resultados = nuevos
+    
+    if pob_max is not None:
+        nuevos = []
+        for p in resultados:
+            if p["poblacion"] <= pob_max:
+                nuevos.append(p)
+        resultados = nuevos
+    
+    if sup_min is not None:
+        nuevos = []
+        for p in resultados:
+            if p["superficie"] >= sup_min:
+                nuevos.append(p)
+        resultados = nuevos
+    
+    if sup_max is not None:
+        nuevos = []
+        for p in resultados:
+            if p["superficie"] <= sup_max:
+                nuevos.append(p)
+        resultados = nuevos
+    
+    print("\n" + "=" * 50)
+    print(f"Resultados: {len(resultados)} paises")
+    print("=" * 50)
+    
+    if len(resultados) == 0:
+        print("No hay resultados")
+    else:
+        for p in resultados:
+            print(p["nombre"] + " | Poblacion: " + str(p["poblacion"]) + " | Superficie: " + str(p["superficie"]) + " km² | " + p["continente"])
+    
+    print("=" * 50)
